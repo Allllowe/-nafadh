@@ -1,36 +1,19 @@
 const express = require('express');
 const path = require('path');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 
 const app = express();
 
 
-// =======================
-// حماية أساسية
-// =======================
-
-app.use(helmet());
-
-app.use(rateLimit({
-    windowMs: 60 * 1000,
-    max: 100
-}));
-
-
-// =======================
-// إعدادات السيرفر
-// =======================
-
+// استقبال JSON
 app.use(express.json({ limit: "50kb" }));
 
-app.use(express.static(
-    path.join(__dirname, '../frontend')
-));
+
+// تشغيل ملفات الواجهة
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 
 // =======================
-// تخزين مؤقت للإيميلات
+// تخزين مؤقت
 // =======================
 
 let emails = [];
@@ -44,28 +27,29 @@ app.post('/api/email/create', (req, res) => {
 
     const id = Date.now().toString();
 
-    const newEmail = {
+    const email = {
         id: id,
-        address: ${id}@nafadh.temp,
+        address: ${id}@nafadh.com,
         messages: [],
         createdAt: Date.now(),
-        expiresAt: Date.now() + (60 * 60 * 1000)
+        expiresAt: Date.now() + 60 * 60 * 1000
     };
 
 
-    emails.push(newEmail);
+    emails.push(email);
+
 
     res.json({
-        email: newEmail.address,
-        id: newEmail.id,
-        expiresAt: newEmail.expiresAt
+        id: email.id,
+        email: email.address,
+        expiresAt: email.expiresAt
     });
 
 });
 
 
 // =======================
-// إضافة رسالة للإيميل
+// إضافة رسالة
 // =======================
 
 app.post('/api/email/message', (req, res) => {
@@ -74,24 +58,26 @@ app.post('/api/email/message', (req, res) => {
 
 
     if (!id || !message) {
-        return res.status(400)
-        .json({ error: "Missing data" });
+        return res.status(400).json({
+            error: "Missing data"
+        });
     }
 
 
     const email = emails.find(
-        e => e.id === id
+        item => item.id === id
     );
 
 
     if (!email) {
-        return res.status(404)
-        .json({ error: "Email not found" });
+        return res.status(404).json({
+            error: "Email not found"
+        });
     }
 
 
     email.messages.push({
-        text: message,
+        message: message,
         time: Date.now()
     });
 
@@ -107,33 +93,33 @@ app.post('/api/email/message', (req, res) => {
 // عرض الرسائل
 // =======================
 
-app.get('/api/email/:id', (req, res)=>{
+app.get('/api/email/:id', (req, res) => {
 
 
     const email = emails.find(
-        e => e.id === req.params.id
+        item => item.id === req.params.id
     );
 
 
-    if(!email){
-        return res.status(404)
-        .json({error:"Not found"});
+    if (!email) {
+        return res.status(404).json({
+            error: "Not found"
+        });
     }
 
 
-
-    if(Date.now() > email.expiresAt){
+    if (Date.now() > email.expiresAt) {
 
         emails = emails.filter(
-            e => e.id !== email.id
+            item => item.id !== email.id
         );
 
 
-        return res.status(410)
-        .json({error:"Expired"});
+        return res.status(410).json({
+            error: "Expired"
+        });
 
     }
-
 
 
     res.json(email);
@@ -141,47 +127,32 @@ app.get('/api/email/:id', (req, res)=>{
 });
 
 
-
 // =======================
-// تنظيف تلقائي كل دقيقة
+// تنظيف كل دقيقة
 // =======================
 
-setInterval(()=>{
+setInterval(() => {
 
     const now = Date.now();
 
+
     emails = emails.filter(
-        e => e.expiresAt > now
+        item => item.expiresAt > now
     );
 
 
-},60000);
+}, 60000);
 
 
 
 // =======================
-// مكان الأدوات المستقبلية
+// صفحة الموقع
 // =======================
 
-app.get('/api/status',(req,res)=>{
-
-    res.json({
-        status:"online",
-        service:"nafadh"
-    });
-
-});
-
-
-
-// =======================
-// فتح الموقع
-// =======================
-
-app.get('*',(req,res)=>{
+app.get('*', (req, res) => {
 
     res.sendFile(
-        path.join(__dirname,'../frontend/index.html')
+        path.join(__dirname, '../frontend/index.html')
     );
 
 });
@@ -195,7 +166,7 @@ app.get('*',(req,res)=>{
 const PORT = process.env.PORT || 5000;
 
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
 
     console.log(
         Server running on port ${PORT}
