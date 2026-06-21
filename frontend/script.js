@@ -304,19 +304,7 @@
    for(let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
    return s;
  }
- function localDemoMessages(){
-   return [
-     { id:'demo-1', time:'منذ دقيقتين', subject:'تأكيد إنشاء حسابك', preview:'مرحباً بك! يرجى مراجعة بيانات حسابك الجديد من خلال لوحة التحكم.', sender:'team@example-app.com', color:'#8b5cf6', initial:'A', read:false },
-     { id:'demo-2', time:'منذ 6 دقائق', subject:'رمز تحقق تجريبي', preview:'هذا رمز تحقق تجريبي لأغراض الاختبار فقط. صالح لمدة 10 دقائق.', sender:'verify@demo-service.test', color:'#34d399', initial:'V', read:false },
-     { id:'demo-3', time:'منذ 14 دقيقة', subject:'فاتورتك الشهرية جاهزة', preview:'يمكنك الاطلاع على تفاصيل الفاتورة والدفع من خلال الرابط المرفق.', sender:'billing@sample-co.io', color:'#60a5fa', initial:'B', read:true },
-     { id:'demo-4', time:'منذ 28 دقيقة', subject:'تحديث في سياسة الاستخدام', preview:'قمنا بتحديث شروط الاستخدام الخاصة بنا، يرجى الاطلاع عليها.', sender:'updates@notify-test.net', color:'#fbbf24', initial:'N', read:true },
-     { id:'demo-5', time:'منذ ساعة', subject:'نشرة الأخبار الأسبوعية', preview:'إليك أهم الأخبار والتحديثات لهذا الأسبوع من فريقنا.', sender:'news@weekly-demo.com', color:'#f472b6', initial:'W', read:true },
-   ];
- }
- 
-[07/01/48 12:13 ص] 💨: // ==================== INBOX - الكود النهائي المحدث ====================
-
-let messages = [];
+  [07/01/48 12:40 ص] 💨: let messages = [];
 let currentAddress = null;
 let usingLocalFallback = false;
 
@@ -447,13 +435,11 @@ function renderMessages(filter = 'all') {
 
     const preview = document.createElement('div');
     preview.className = 'msg-preview';
-    preview.textContent = m.preview  m.
-[07/01/48 12:13 ص] 💨: content  '';
+    preview.textContent = m.preview  m.content  '';
 
     body.appendChild(subject);
     body.appendChild(preview);
-
-    const sender = document.createElement('div');
+[07/01/48 12:40 ص] 💨: const sender = document.createElement('div');
     sender.className = 'msg-sender';
     sender.textContent = m.sender || 'unknown@domain.com';
 
