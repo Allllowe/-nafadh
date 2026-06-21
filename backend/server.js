@@ -1,175 +1,65 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-// استقبال JSON
-app.use(express.json({ limit: "50kb" }));
-
-
-// تشغيل ملفات الواجهة
+// Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// ====================== TEMPORARY EMAIL API ======================
 
-// =======================
-// تخزين مؤقت
-// =======================
+// In-memory storage
+let inboxes = new Map(); // address -> inbox object
 
-let emails = [];
+// Helper: generate random address
+function generateAddress() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let addr = '';
+  for (let i = 0; i < 8; i++) {
+    addr += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return addr + '@nafadh.app';
+}
 
+// Create new inbox
+app.post('/api/inbox', (req, res) => {
+  const address = generateAddress();
+  const expiresAt = new Date(Date.now() + 20 * 60 * 1000); // 20 minutes
 
-// =======================
-// إنشاء إيميل مؤقت
-// =======================
+  const inbox = {
+    address,
+    messages: [],
+    expiresAt: expiresAt.toISOString(),
+    createdAt: new Date().toISOString()
+  };
 
-app.post('/api/email/create', (req, res) => {
+  inboxes.set(address, inbox);
 
-    const id = Date.now().toString();
-
-    const email = {
-        id: id,
-        address: ${id}@nafadh.com,
-        messages: [],
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 60 * 60 * 1000
-    };
-
-
-    emails.push(email);
-
-
-    res.json({
-        id: email.id,
-        email: email.address,
-        expiresAt: email.expiresAt
-    });
-
+  res.json({
+    address,
+    messages: [],
+    expiresAt: inbox.expiresAt
+  });
 });
 
+// Get messages
+app.get('/api/inbox/:address/messages', (req, res) => {
+  const { address } = req.params;
+  const inbox = inboxes.get(address);
 
-// =======================
-// إضافة رسالة
-// =======================
+  if (!inbox) {
+    return res.status(404).json({ message: 'Inbox not found or expired' });
+  }
 
-app.post('/api/email/message', (req, res) => {
+  // Check expiry
+  if (new Date(inbox.expiresAt) < new Date()) {
+    inboxes.delete(address);
+    return res.status(404).json({ message: 'Inbox expired' });
+  }
 
-    const { id, message } = req.body;
-
-
-    if (!id || !message) {
-        return res.status(400).json({
-            error: "Missing data"
-        });
-    }
-
-
-    const email = emails.find(
-        item => item.id === id
-    );
-
-
-    if (!email) {
-        return res.status(404).json({
-            error: "Email not found"
-        });
-    }
-
-
-    email.messages.push({
-        message: message,
-        time: Date.now()
-    });
-
-
-    res.json({
-        success: true
-    });
-
-});
-
-
-// =======================
-// عرض الرسائل
-// =======================
-
-app.get('/api/email/:id', (req, res) => {
-
-
-    const email = emails.find(
-        item => item.id === req.params.id
-    );
-
-
-    if (!email) {
-        return res.status(404).json({
-            error: "Not found"
-        });
-    }
-
-
-    if (Date.now() > email.expiresAt) {
-
-        emails = emails.filter(
-            item => item.id !== email.id
-        );
-
-
-        return res.status(410).json({
-            error: "Expired"
-        });
-
-    }
-
-
-    res.json(email);
-
-});
-
-
-// =======================
-// تنظيف كل دقيقة
-// =======================
-
-setInterval(() => {
-
-    const now = Date.now();
-
-
-    emails = emails.filter(
-        item => item.expiresAt > now
-    );
-
-
-}, 60000);
-
-
-
-// =======================
-// صفحة الموقع
-// =======================
-
-app.get('*', (req, res) => {
-
-    res.sendFile(
-        path.join(__dirname, '../frontend/index.html')
-    );
-
-});
-
-
-
-// =======================
-// تشغيل السيرفر
-// =======================
-
-const PORT = process.env.PORT || 5000;
-
-
-app.listen(PORT, () => {
-
-    console.log(
-        Server running on port ${PORT}
-    );
-
-});
+  res.json({ messages:
