@@ -314,150 +314,173 @@
    ];
  }
  
- let messages = [];
- let currentAddress = null;
- let usingLocalFallback = false;
- 
- async function createInboxOnServer(){
-   let serverExpiry = null;
-   try{
-     const data = await apiFetch('/inbox', { method:'POST' });
-     currentAddress = data.address;
-     messages = data.messages || [];
-     serverExpiry = data.expiresAt;
-     usingLocalFallback = false;
-   } catch(err){
-     currentAddress = randomAddrSegment(7) + '@nafadh.local';
-     messages = localDemoMessages();
-     usingLocalFallback = true;
-   }
-   emailAddrEl.textContent = currentAddress;
-   // Sync the countdown to the inbox's real expiry (or a local 20-min window
-   // when running standalone without the backend).
-   if(serverExpiry){
-     setExpiry(serverExpiry, true);
-   } else {
-     setLocalExpiry(DEFAULT_TTL_MS);
-   }
-   renderMessages('all');
- }
- 
- async function refreshInboxFromServer(){
-   if(usingLocalFallback || !currentAddress){
-     renderMessages(document.querySelector('.filter-tabs button.active').dataset.filter);
-     return;
-   }
-   try{
-     const data = await apiFetch('/inbox/' + encodeURIComponent(currentAddress) + '/messages');
-     messages = data.messages || [];
-   } catch(err){
-     // Backend became unreachable mid-session — keep showing what we have.
-   }
-   renderMessages(document.querySelector('.filter-tabs button.active').dataset.filter);
- }
- 
- document.getElementById('newEmailBtn').addEventListener('click', async function(){
-   await createInboxOnServer();
-   showToast('✉️ تم إنشاء بريد مؤقت جديد');
- });
- document.getElementById('refreshBtn').addEventListener('click', async function(){
-   await refreshInboxFromServer();
-   showToast('🔄 تم تحديث صندوق الوارد');
- });
- document.getElementById('deleteAllBtn').addEventListener('click', async function(){
-   if(!usingLocalFallback && currentAddress){
-     try{ await apiFetch('/inbox/' + encodeURIComponent(currentAddress) + '/messages', { method:'DELETE' }); }
-     catch(err){ /* fall through and clear the local view anyway */ }
-   }
-   messages.length = 0;
-   renderMessages('all');
-   showToast('🗑️ تم حذف جميع الرسائل');
- });
- 
- const msgList = document.getElementById('msgList');
- function renderMessages(filter){
-   filter = filter || 'all';
-   msgList.innerHTML = '';
-   document.getElementById('msgCount').textContent = messages.length + ' رسائل';
- 
-   if(messages.length === 0){
-     const empty = document.createElement('div');
-     empty.className = 'msg-empty';
-     empty.textContent = 'لا توجد رسائل في صندوق الوارد';
-     msgList.appendChild(empty);
-     return;
-   }
- 
-   const filtered = messages.filter(m => filter === 'all' ? true : filter === 'unread' ? !m.read : m.read);
- 
-   if(filtered.length === 0){
-     const empty = document.createElement('div');
-     empty.className = 'msg-empty';
-     empty.textContent = 'لا توجد رسائل ضمن هذا الفلتر';
-     msgList.appendChild(empty);
-     return;
-   }
- 
-   filtered.forEach(m => {
-     const row = document.createElement('div');
-     row.className = 'msg-row';
- 
-     const dot = document.createElement('span');
-     dot.className = 'unread-dot' + (m.read ? ' read' : '');
- 
-     const time = document.createElement('span');
-     time.className = 'msg-time';
-     time.textContent = m.time;
- 
-     const avatar = document.createElement('div');
-     avatar.className = 'msg-avatar';
-     avatar.style.background = m.color + '33';
-     avatar.style.color = m.color;
-     avatar.textContent = m.initial;
- 
-     const body = document.createElement('div');
-     body.className = 'msg-body';
-     const subject = document.createElement('div');
-     subject.className = 'msg-subject';
-     subject.textContent = m.subject;
-     const preview = document.createElement('div');
-     preview.className = 'msg-preview';
-     preview.textContent = m.preview;
-     body.appendChild(subject);
-     body.appendChild(preview);
- 
-     const sender = document.createElement('div');
-     sender.className = 'msg-sender';
-     sender.textContent = m.sender;
- 
-     row.appendChild(dot);
-     row.appendChild(time);
-     row.appendChild(avatar);
-     row.appendChild(body);
-     row.appendChild(sender);
- 
-     row.addEventListener('click', () => {
-       m.read = true;
-       renderMessages(document.querySelector('.filter-tabs button.active').dataset.filter);
-       if(!usingLocalFallback && currentAddress && !String(m.id).startsWith('demo-')){
-         apiFetch('/inbox/' + encodeURIComponent(currentAddress) + '/messages/' + encodeURIComponent(m.id) + '/read', { method:'PATCH' })
-           .catch(() => { /* non-critical, UI already reflects read state */ });
-       }
-     });
-     msgList.appendChild(row);
-   });
- }
- // Create a real inbox via the backend on first load (falls back to local
- // demo data automatically if the API isn't running yet).
- createInboxOnServer();
- 
- document.querySelectorAll('.filter-tabs button').forEach(btn => {
-   btn.addEventListener('click', () => {
-     document.querySelectorAll('.filter-tabs button').forEach(b => b.classList.remove('active'));
-     btn.classList.add('active');
-     renderMessages(btn.dataset.filter);
-   });
- });
+[07/01/48 12:13 ص] 💨: // ==================== INBOX - الكود النهائي المحدث ====================
+
+let messages = [];
+let currentAddress = null;
+let usingLocalFallback = false;
+
+async function createInboxOnServer() {
+  try {
+    const data = await apiFetch('/inbox', { method: 'POST' });
+    currentAddress = data.address;
+    messages = data.messages || [];
+    usingLocalFallback = false;
+
+    emailAddrEl.textContent = currentAddress;
+    setExpiry(data.expiresAt, true);
+    renderMessages('all');
+
+  } catch (err) {
+    currentAddress = generateRandomAddress();
+    messages = [];
+    usingLocalFallback = true;
+    emailAddrEl.textContent = currentAddress;
+    setLocalExpiry(DEFAULT_TTL_MS);
+    renderMessages('all');
+  }
+}
+
+function generateRandomAddress() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let addr = '';
+  for (let i = 0; i < 8; i++) {
+    addr += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return addr + '@nafadhmail.com';
+}
+
+async function refreshInboxFromServer() {
+  if (!currentAddress) return;
+
+  try {
+    const data = await apiFetch('/inbox/' + encodeURIComponent(currentAddress) + '/messages');
+    messages = data.messages || [];
+  } catch (err) {
+    // keep current messages
+  }
+  renderMessages(document.querySelector('.filter-tabs button.active').dataset.filter);
+}
+
+document.getElementById('newEmailBtn').addEventListener('click', async () => {
+  await createInboxOnServer();
+  showToast('✉️ تم إنشاء بريد مؤقت جديد');
+});
+
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  await refreshInboxFromServer();
+  showToast('🔄 تم تحديث صندوق الوارد');
+});
+
+document.getElementById('deleteAllBtn').addEventListener('click', async () => {
+  if (currentAddress && !usingLocalFallback) {
+    try {
+      await apiFetch('/inbox/' + encodeURIComponent(currentAddress) + '/messages', { method: 'DELETE' });
+    } catch (e) {}
+  }
+  messages = [];
+  renderMessages('all');
+  showToast('🗑️ تم حذف جميع الرسائل');
+});
+
+document.getElementById('extendBtn').addEventListener('click', async () => {
+  if (!currentAddress) return;
+
+  if (!usingLocalFallback) {
+    try {
+      const data = await apiFetch('/inbox/' + encodeURIComponent(currentAddress) + '/extend', { method: 'POST' });
+      setExpiry(data.expiresAt, false);
+      showToast('⏱️ تم تمديد الوقت 10 دقائق');
+      return;
+    } catch (e) {}
+  }
+
+  expiresAtMs += 10 * 60 * 1000;
+  timerBaselineMs = Math.max(timerBaselineMs, expiresAtMs - Date.now(), 1);
+  renderTimer();
+  showToast('⏱️ تم تمديد الوقت 10 دقائق');
+});
+
+function renderMessages(filter = 'all') {
+  const msgList = document.getElementById('msgList');
+  msgList.innerHTML = '';
+  document.getElementById('msgCount').textContent = messages.length + ' رسائل';
+
+  if (messages.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'msg-empty';
+    empty.textContent = 'لا توجد رسائل في صندوق الوارد';
+    msgList.appendChild(empty);
+    return;
+  }
+
+  const filtered = messages.filter(m => {
+    if (filter === 'all') return true;
+    if (filter === 'unread') return !m.read;
+    if (filter === 'read') return m.read;
+    return true;
+  });
+
+  filtered.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+
+    const dot = document.createElement('span');
+    dot.className = 'unread-dot' + (m.read ? ' read' : '');
+
+    const time = document.createElement('span');
+    time.className = 'msg-time';
+    time.textContent = m.time || 'الآن';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.style.background = (m.color || '#8b5cf6') + '33';
+    avatar.style.color = m.color || '#8b5cf6';
+    avatar.textContent = m.initial || 'A';
+
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+
+    const subject = document.createElement('div');
+    subject.className = 'msg-subject';
+    subject.textContent = m.subject || 'بدون عنوان';
+
+    const preview = document.createElement('div');
+    preview.className = 'msg-preview';
+    preview.textContent = m.preview  m.
+[07/01/48 12:13 ص] 💨: content  '';
+
+    body.appendChild(subject);
+    body.appendChild(preview);
+
+    const sender = document.createElement('div');
+    sender.className = 'msg-sender';
+    sender.textContent = m.sender || 'unknown@domain.com';
+
+    row.appendChild(dot);
+    row.appendChild(time);
+    row.appendChild(avatar);
+    row.appendChild(body);
+    row.appendChild(sender);
+
+    row.addEventListener('click', () => {
+      m.read = true;
+      renderMessages(document.querySelector('.filter-tabs button.active').dataset.filter);
+    });
+
+    msgList.appendChild(row);
+  });
+}
+
+document.querySelectorAll('.filter-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMessages(btn.dataset.filter);
+  });
+});
+
+createInboxOnServer();
  
  // ---------- Generic: build a copyable data row safely (no innerHTML for dynamic value) ----------
  function buildDataRow(label, value){
