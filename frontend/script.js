@@ -304,7 +304,7 @@
    for(let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
    return s;
  }
-  [07/01/48 12:40 ص] 💨: let messages = [];
+let messages = [];
 let currentAddress = null;
 let usingLocalFallback = false;
 
