@@ -8,33 +8,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend files
+// Serve frontend static files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// ====================== TEMPORARY EMAIL API ======================
+// ====================== IN-MEMORY INBOXES ======================
+const inboxes = new Map(); // address => inbox data
 
-// In-memory storage
-let inboxes = new Map(); // address -> inbox object
-
-// Helper: generate random address
 function generateAddress() {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let addr = '';
+  let result = '';
   for (let i = 0; i < 8; i++) {
-    addr += chars[Math.floor(Math.random() * chars.length)];
+    result += chars[Math.floor(Math.random() * chars.length)];
   }
-  return addr + '@nafadh.app';
+  return result + '@nafadh.app';
 }
 
 // Create new inbox
 app.post('/api/inbox', (req, res) => {
   const address = generateAddress();
-  const expiresAt = new Date(Date.now() + 20 * 60 * 1000); // 20 minutes
+  const expiresAt = new Date(Date.now() + 20 * 60 * 1000).toISOString();
 
   const inbox = {
     address,
     messages: [],
-    expiresAt: expiresAt.toISOString(),
+    expiresAt,
     createdAt: new Date().toISOString()
   };
 
@@ -43,7 +40,7 @@ app.post('/api/inbox', (req, res) => {
   res.json({
     address,
     messages: [],
-    expiresAt: inbox.expiresAt
+    expiresAt
   });
 });
 
@@ -52,14 +49,58 @@ app.get('/api/inbox/:address/messages', (req, res) => {
   const { address } = req.params;
   const inbox = inboxes.get(address);
 
-  if (!inbox) {
+  if (!inbox || new Date(inbox.expiresAt) < new Date()) {
+    inboxes.delete(address);
     return res.status(404).json({ message: 'Inbox not found or expired' });
   }
 
-  // Check expiry
-  if (new Date(inbox.expiresAt) < new Date()) {
-    inboxes.delete(address);
-    return res.status(404).json({ message: 'Inbox expired' });
+  res.json({ messages: inbox.messages });
+});
+
+// Extend inbox
+app.post('/api/inbox/:address/extend', (req, res) => {
+  const { address } = req.params;
+  const inbox = inboxes.get(address);
+
+  if (!inbox) {
+    return res.status(404).json({ message: 'Inbox not found' });
   }
+
+  inbox.expiresAt = new Date(Date.now() + 20 * 60 * 1000).toISOString();
+  res.json({ expiresAt: inbox.expiresAt });
+});
+
+// Delete all messages
+app.delete('/api/inbox/:address/messages', (req, res) => {
+  const { address } = req.params;
+  const inbox = inboxes.get(address);
+  if (inbox) inbox.messages = [];
+  res.status(204).send();
+});
+
+// Mark as read (dummy)
+app.patch('/api/inbox/:address/messages/:id/read', (req, res) => {
+  res.status(204).send();
+});
+
+// ====================== CATCH ALL ======================
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
+// Clean expired inboxes
+setInterval(() => {
+  const now = new Date();
+  for (const [addr, inbox] of inboxes.entries()) {
+    if (new Date(inbox.expiresAt) < now) {
+      inboxes.delete(addr);
+    }
+  }
+}, 60000);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
   res.json({ messages:
