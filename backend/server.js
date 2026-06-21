@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// In-memory inboxes
+// In-memory storage
 const inboxes = new Map();
 
 function generateAddress() {
@@ -18,7 +18,7 @@ function generateAddress() {
   for (let i = 0; i < 8; i++) {
     addr += chars[Math.floor(Math.random() * chars.length)];
   }
-  return addr + '@nafadh.app';
+  return addr + '@nafadh.com';   // ← هنا غيرناه
 }
 
 // Create inbox
