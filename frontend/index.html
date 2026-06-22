@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نَفاذ Nafadh — بريد مؤقت وأدوات ذكية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+</head>
+
+<body>
+<div class="wrap">
+ 
+ <nav>
+   <div class="nav-right" style="order:2;">
+     <button class="icon-btn" id="shareBtn" title="مشاركة" type="button">
+       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+     </button>
+     <button class="icon-btn" id="themeBtn" title="الوضع الليلي/النهاري" type="button">
+       <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+       <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+     </button>
+     <a href="#" class="login-btn">تسجيل الدخول</a>
+   </div>
+   <div class="nav-links" style="order:1;">
+     <a href="#" class="nav-link" data-page="home">الرئيسية</a>
+     <a href="#" class="nav-link active" data-page="inbox">البريد المؤقت</a>
+     <a href="#" class="nav-link" data-page="tools">أدواتنا</a>
+     <a href="#">الأسئلة الشائعة</a>
+     <a href="#">API</a>
+   </div>
+   <div class="brand" style="order:0;">
+     <div class="brand-icon">
+       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+     </div>
+     نَفاذ
+   </div>
+ </nav>
+ 
+ <!-- ===================== HOME PAGE ===================== -->
+ <main class="page active" id="page-home">
+   <section class="hero">
+     <div class="eyebrow"><span class="dot"></span> بريد مؤقت وأدوات ذكية</div>
+     <h1 class="hero-title">خصوصيتك تبدأ <span class="accent">من هنا</span></h1>
+     <p class="hero-sub">احمِ نفسك من الرسائل المزعجة، وأنشئ بريد مؤقت في ثوانٍ. واستخدم أدواتنا الذكية لحماية هويتك على الإنترنت.</p>
+     <div class="hero-illustration">
+       <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+         <defs>
+           <linearGradient id="envGrad" x1="0" y1="0" x2="1" y2="1">
+             <stop offset="0" stop-color="#a78bfa"/>
+             <stop offset="1" stop-color="#7c3aed"/>
+           </linearGradient>
+         </defs>
+         <rect x="30" y="50" width="140" height="90" rx="14" fill="url(#envGrad)" opacity="0.95"/>
+         <path d="M30 60 L100 105 L170 60" stroke="#0b0a12" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".3"/>
+         <circle cx="100" cy="95" r="22" fill="#0b0a12" opacity=".85"/>
+         <rect x="88" y="86" width="24" height="18" rx="3" fill="#c4b5fd"/>
+         <path d="M92 86v-6a8 8 0 0 1 16 0v6" stroke="#c4b5fd" stroke-width="3" fill="none"/>
+         <circle cx="165" cy="35" r="5" fill="#c4b5fd"/>
+         <circle cx="25" cy="30" r="3" fill="#a78bfa"/>
+         <circle cx="178" cy="100" r="4" fill="#a78bfa"/>
+       </svg>
+     </div>
+     <div class="cta-row">
+       <a href="#" class="btn-primary nav-link" data-page="inbox">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+         إنشاء بريد مؤقت الآن
+       </a>
+       <a href="#" class="btn-ghost nav-link" data-page="tools">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+         استكشاف الأدوات
+       </a>
+     </div>
+ 
+     <div class="badge-row">
+       <div class="badge-card">
+         <div class="badge-icon" style="background:rgba(52,211,153,.12);">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+         </div>
+         <div><h4>مجاني 100%</h4><p>جميع الأدوات مجانية</p></div>
+       </div>
+       <div class="badge-card">
+         <div class="badge-icon" style="background:rgba(139,92,246,.12);">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+         </div>
+         <div><h4>لا يتطلب تسجيل</h4><p>استخدم مباشرة بدون حساب</p></div>
+       </div>
+       <div class="badge-card">
+         <div class="badge-icon" style="background:rgba(96,165,250,.12);">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+         </div>
+         <div><h4>حماية خصوصيتك</h4><p>نحافظ على بياناتك آمنة</p></div>
+       </div>
+       <div class="badge-card">
+         <div class="badge-icon" style="background:rgba(251,191,36,.12);">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+         </div>
+         <div><h4>سريع وخفيف</h4><p>يعمل في جميع الأجهزة</p></div>
+       </div>
+     </div>
+   </section>
+ 
+   <section class="tools-section" id="tools">
+     <h2>أدواتنا الذكية</h2>
+     <p class="sub">كل ما تحتاجه لحماية هويتك الرقمية في مكان واحد</p>
+     <div class="tools-grid">
+       <div class="tool-card violet nav-link" data-page="inbox">
+         <div class="tool-icon" style="background:rgba(139,92,246,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+         </div>
+         <h3>البريد المؤقت</h3>
+         <p>أنشئ بريد مؤقت لاستقبال الرسائل بدون الكشف عن بريدك الحقيقي</p>
+         <span class="tool-link violet">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card emerald nav-link" data-page="dataGen">
+         <div class="tool-icon" style="background:rgba(52,211,153,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+         </div>
+         <h3>مولد البيانات التجريبية</h3>
+         <p>أنشئ بيانات شخصية وهمية كاملة للتجربة والتسجيل في المواقع</p>
+         <span class="tool-link emerald">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card blue nav-link" data-page="usernameGen">
+         <div class="tool-icon" style="background:rgba(96,165,250,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+         </div>
+         <h3>مولد اليوزرات</h3>
+         <p>أنشئ أسماء مستخدمين قصيرة وفريدة للألعاب ومواقع التواصل</p>
+         <span class="tool-link blue">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card amber nav-link" data-page="passGen">
+         <div class="tool-icon" style="background:rgba(251,191,36,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+         </div>
+         <h3>مولد كلمات المرور</h3>
+         <p>أنشئ كلمات مرور قوية وآمنة لحساباتك المختلفة</p>
+         <span class="tool-link amber">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card violet nav-link" data-page="pwCheck">
+         <div class="tool-icon" style="background:rgba(139,92,246,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+         </div>
+         <h3>فاحص قوة الباسورد</h3>
+         <p>اختبر مدى قوة كلمة مرورك واكتشف نقاط ضعفها فوراً</p>
+         <span class="tool-link violet">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card blue nav-link" data-page="qrGen">
+         <div class="tool-icon" style="background:rgba(96,165,250,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v3M14 21h3M18 18h3v3"/></svg>
+         </div>
+         <h3>مولد QR Code</h3>
+         <p>حوّل أي رابط أو نص أو شبكة واي فاي إلى رمز QR قابل للمسح</p>
+         <span class="tool-link blue">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card emerald nav-link" data-page="imgCompress">
+         <div class="tool-icon" style="background:rgba(52,211,153,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M4 16l4.5-6 3.5 4 2.5-3L20 16"/><rect x="2" y="3" width="20" height="18" rx="2"/></svg>
+         </div>
+         <h3>ضاغط الصور</h3>
+         <p>صغّر حجم صورك مع التحكم بالجودة، معالجة حقيقية في متصفحك</p>
+         <span class="tool-link emerald">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card amber nav-link" data-page="imgConvert">
+         <div class="tool-icon" style="background:rgba(251,191,36,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+         </div>
+         <h3>محوّل صيغة الصور</h3>
+         <p>حوّل صورك بين PNG و JPG و WebP بجودة كاملة</p>
+         <span class="tool-link amber">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card violet nav-link" data-page="base64Tool">
+         <div class="tool-icon" style="background:rgba(139,92,246,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+         </div>
+         <h3>محوّل Base64 و URL</h3>
+         <p>شفّر أو فكّ تشفير أي نص بصيغة Base64 أو URL فوراً</p>
+         <span class="tool-link violet">استخدم الأداة ←</span>
+       </div>
+       <div class="tool-card blue nav-link" data-page="pdfMerge">
+         <div class="tool-icon" style="background:rgba(96,165,250,.15);">
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+         </div>
+         <h3>دمج ملفات PDF</h3>
+         <p>ادمج عدة ملفات PDF في ملف واحد، بترتيب تتحكم به بنفسك</p>
+         <span class="tool-link blue">استخدم الأداة ←</span>
+       </div>
+     </div>
+   </section>
+ 
+   <section class="stats-section">
+     <div><div class="stat-num">+10 مليون</div><div class="stat-label">رسالة مستلمة</div></div>
+     <div><div class="stat-num">+1 مليون</div><div class="stat-label">مستخدم راضٍ</div></div>
+     <div><div class="stat-num">+100</div><div class="stat-label">دولة</div></div>
+     <div><div class="stat-num">99.9%</div><div class="stat-label">وقت التشغيل</div></div>
+   </section>
+ </main>
+ 
+ <!-- ===================== INBOX PAGE ===================== -->
+ <main class="page" id="page-inbox">
+   <div class="inbox-wrap">
+     <div class="inbox-header">
+       <div>
+         <h1>صندوق الوارد <span class="live-dot"></span></h1>
+         <p>جميع الرسائل الواردة إلى بريدك المؤقت</p>
+       </div>
+     </div>
+ 
+     <div class="top-cards">
+       <div class="card timer-card">
+         <div class="label">ينتهي خلال</div>
+         <div class="time" id="timerDisplay">20:00</div>
+         <div class="unit">دقيقة</div>
+         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+         <div class="timer-actions">
+           <button class="btn-small primary" id="extendBtn" style="flex:none; width:100%;" type="button">
+             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+             تمديد الوقت
+           </button>
+         </div>
+       </div>
+ 
+       <div class="card email-card">
+         <div class="email-actions" style="order:1;">
+           <button class="btn-small primary" id="newEmailBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>بريد جديد</button>
+           <button class="btn-small neutral" id="refreshBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>تحديث</button>
+           <button class="btn-small danger" id="deleteAllBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>حذف الكل</button>
+         </div>
+         <div class="email-info" style="order:2;">
+           <div class="status"><span class="live-dot" style="box-shadow:none;"></span> نشط</div>
+           <div class="addr-label">بريدك المؤقت</div>
+           <div class="addr" id="emailAddr">m4f2q@nafadh.local</div>
+         </div>
+         <button class="copy-btn" style="order:3;" id="copyBtn" type="button" title="نسخ البريد">
+           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+         </button>
+         <div class="qr-box" style="order:4;">
+           <svg width="50" height="50" viewBox="0 0 50 50"><rect width="50" height="50" fill="#fff"/><g fill="#0b0a12"><rect x="4" y="4" width="14" height="14"/><rect x="32" y="4" width="14" height="14"/><rect x="4" y="32" width="14" height="14"/><rect x="8" y="8" width="6" height="6" fill="#fff"/><rect x="36" y="8" width="6" height="6" fill="#fff"/><rect x="8" y="36" width="6" height="6" fill="#fff"/><rect x="22" y="4" width="4" height="4"/><rect x="22" y="12" width="4" height="4"/><rect x="22" y="22" width="4" height="4"/><rect x="30" y="22" width="4" height="4"/><rect x="38" y="22" width="4" height="4"/><rect x="22" y="30" width="4" height="4"/><rect x="22" y="38" width="4" height="4"/><rect x="30" y="38" width="4" height="4"/><rect x="38" y="30" width="4" height="4"/></g></svg>
+         </div>
+       </div>
+     </div>
+ 
+     <div class="msg-toolbar">
+       <h3 id="msgCount">5 رسائل</h3>
+       <div class="filter-tabs">
+         <button class="active" data-filter="all" type="button">الكل</button>
+         <button data-filter="unread" type="button">غير مقروء</button>
+         <button data-filter="read" type="button">مقروء</button>
+       </div>
+     </div>
+ 
+     <div class="msg-list" id="msgList"></div>
+ 
+     <div class="tip-bar">💡 نصيحة: يمكن حذف الرسائل أو صندوق البريد بالكامل في أي وقت</div>
+   </div>
+ </main>
+ 
+ <!-- ===================== DATA GENERATOR PAGE ===================== -->
+ <main class="page" id="page-dataGen">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(52,211,153,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+       </div>
+       <h1>مولد البيانات التجريبية</h1>
+       <p>أنشئ هوية تجريبية كاملة وهمية للتسجيل والاختبار</p>
+     </div>
+ 
+     <div class="gen-card">
+       <div class="field-row">
+         <label>الأسلوب</label>
+         <select class="select-input" id="dataLocale">
+           <option value="ar">عربي</option>
+           <option value="en">إنجليزي</option>
+         </select>
+       </div>
+       <button class="gen-btn" id="genDataBtn" type="button" style="background: linear-gradient(135deg, #34d399, #059669); box-shadow:0 10px 26px rgba(52,211,153,.3);">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+         توليد بيانات جديدة
+       </button>
+     </div>
+ 
+     <div class="data-table" id="dataResult"></div>
+   </div>
+ </main>
+ 
+ <!-- ===================== USERNAME GENERATOR PAGE ===================== -->
+ <main class="page" id="page-usernameGen">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(96,165,250,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+       </div>
+       <h1>مولد اليوزرات</h1>
+       <p>أسماء مستخدمين قصيرة وفريدة وجاهزة للألعاب ومواقع التواصل</p>
+     </div>
+ 
+     <div class="gen-card">
+       <div class="field-row">
+         <label>كلمة أساسية (اختياري — حتى 8 أحرف)</label>
+         <input type="text" class="text-input" id="userKeyword" placeholder="مثال: fox, nova, zed" maxlength="8">
+       </div>
+       <div class="field-row">
+         <div class="slider-row"><label>عدد الأرقام المضافة</label><span class="val" id="numCountVal">2</span></div>
+         <input type="range" id="numCount" min="0" max="3" value="2">
+       </div>
+       <button class="gen-btn" id="genUserBtn" type="button" style="background: linear-gradient(135deg, #60a5fa, #2563eb); box-shadow:0 10px 26px rgba(96,165,250,.3);">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+         توليد يوزرات
+       </button>
+     </div>
+ 
+     <div class="data-table username-grid" id="userResult"></div>
+   </div>
+ </main>
+ 
+ <!-- ===================== PASSWORD GENERATOR PAGE ===================== -->
+ <main class="page" id="page-passGen">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(251,191,36,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+       </div>
+       <h1>مولد كلمات المرور</h1>
+       <p>كلمات مرور قوية وعشوائية لحماية حساباتك</p>
+     </div>
+ 
+     <div class="result-card" style="margin-bottom:20px;">
+       <div class="result-text" id="passOutput">f9K!mQ2x@vL7</div>
+       <button class="copy-btn" id="copyPassBtn" type="button" title="نسخ كلمة المرور">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+       </button>
+     </div>
+     <div class="strength-bar">
+       <div class="strength-seg fill"></div><div class="strength-seg fill"></div><div class="strength-seg fill"></div><div class="strength-seg fill"></div>
+     </div>
+     <div class="strength-label" id="strengthLabel">قوة كلمة المرور: ممتازة</div>
+ 
+     <div class="gen-card">
+       <div class="field-row">
+         <div class="slider-row"><label>طول كلمة المرور</label><span class="val" id="lenVal">12</span></div>
+         <input type="range" id="passLen" min="6" max="32" value="12">
+       </div>
+       <div class="toggle-grid">
+         <label class="toggle-chip on"><input type="checkbox" id="optUpper" checked> أحرف كبيرة (A-Z)</label>
+         <label class="toggle-chip on"><input type="checkbox" id="optLower" checked> أحرف صغيرة (a-z)</label>
+         <label class="toggle-chip on"><input type="checkbox" id="optNum" checked> أرقام (0-9)</label>
+         <label class="toggle-chip on"><input type="checkbox" id="optSym" checked> رموز (!@#$)</label>
+       </div>
+       <button class="gen-btn" id="genPassBtn" type="button" style="margin-top:18px; background: linear-gradient(135deg, #fbbf24, #d97706); box-shadow:0 10px 26px rgba(251,191,36,.3);">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+         توليد كلمة مرور جديدة
+       </button>
+     </div>
+   </div>
+ </main>
+ 
+ <!-- ===================== PASSWORD STRENGTH CHECKER PAGE ===================== -->
+ <main class="page" id="page-pwCheck">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(139,92,246,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+       </div>
+       <h1>فاحص قوة الباسورد</h1>
+       <p>اختبر كلمة مرورك محلياً في متصفحك — لا تُرسل لأي خادم</p>
+     </div>
+ 
+     <div class="gen-card">
+       <div class="field-row">
+         <label>أدخل كلمة المرور</label>
+         <div class="pwcheck-input-wrap">
+           <input type="password" class="pwcheck-input" id="pwCheckInput" placeholder="اكتب كلمة المرور هنا..." autocomplete="off" spellcheck="false">
+           <button class="pwcheck-toggle" id="pwToggleVisibility" type="button" title="إظهار/إخفاء">
+             <svg id="pwEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+           </button>
+         </div>
+       </div>
+ 
+       <div class="pwcheck-meter">
+         <div class="pwcheck-seg" id="pwSeg0"></div>
+         <div class="pwcheck-seg" id="pwSeg1"></div>
+         <div class="pwcheck-seg" id="pwSeg2"></div>
+         <div class="pwcheck-seg" id="pwSeg3"></div>
+         <div class="pwcheck-seg" id="pwSeg4"></div>
+       </div>
+       <div class="pwcheck-label-row">
+         <span class="pwcheck-label" id="pwStrengthLabel">أدخل كلمة مرور للفحص</span>
+         <span class="pwcheck-eta" id="pwEta"></span>
+       </div>
+ 
+       <div class="pwcheck-rules" id="pwRules">
+         <div class="rule-row" data-rule="len"><span class="rule-icon">●</span> 8 أحرف على الأقل</div>
+         <div class="rule-row" data-rule="upper"><span class="rule-icon">●</span> يحتوي على حرف كبير (A-Z)</div>
+         <div class="rule-row" data-rule="lower"><span class="rule-icon">●</span> يحتوي على حرف صغير (a-z)</div>
+         <div class="rule-row" data-rule="num"><span class="rule-icon">●</span> يحتوي على رقم (0-9)</div>
+         <div class="rule-row" data-rule="sym"><span class="rule-icon">●</span> يحتوي على رمز خاص (!@#$...)</div>
+       </div>
+ 
+       <div class="pwcheck-warnings" id="pwWarnings"></div>
+     </div>
+   </div>
+ </main>
+ 
+ <!-- ===================== QR CODE GENERATOR PAGE ===================== -->
+ <main class="page" id="page-qrGen">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(96,165,250,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+       </div>
+       <h1>مولد QR Code</h1>
+       <p>أنشئ رمز QR حقيقي قابل للمسح من رابط أو نص أو شبكة واي فاي</p>
+     </div>
+ 
+     <div class="qr-preview-card">
+       <div class="qr-canvas-box" id="qrCanvasBox">
+         <span class="qr-empty-state">أدخل بيانات وستظهر معاينة الرمز هنا تلقائياً</span>
+       </div>
+       <div class="qr-actions">
+         <button class="btn-small primary" id="qrDownloadBtn" type="button" style="flex:1; padding:11px;">
+           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+           تحميل PNG
+         </button>
+       </div>
+     </div>
+ 
+     <div class="gen-card">
+       <div class="qr-tabs">
+         <button class="active" data-qrtype="url" type="button">رابط</button>
+         <button data-qrtype="text" type="button">نص</button>
+         <button data-qrtype="wifi" type="button">واي فاي</button>
+       </div>
+ 
+       <div id="qrFieldsUrl">
+         <div class="field-row">
+           <label>الرابط (URL)</label>
+           <input type="text" class="text-input" id="qrUrlInput" placeholder="https://example.com" value="https://nafadh.local">
+         </div>
+       </div>
+ 
+       <div id="qrFieldsText" style="display:none;">
+         <div class="field-row">
+           <label>النص</label>
+           <input type="text" class="text-input" id="qrTextInput" placeholder="اكتب أي نص هنا..." maxlength="500">
+         </div>
+       </div>
+ 
+       <div id="qrFieldsWifi" style="display:none;">
+         <div class="wifi-grid">
+           <div class="field-row">
+             <label>اسم الشبكة (SSID)</label>
+             <input type="text" class="text-input" id="qrWifiSsid" placeholder="My_WiFi" maxlength="64">
+           </div>
+           <div class="field-row">
+             <label>كلمة المرور</label>
+             <input type="text" class="text-input" id="qrWifiPass" placeholder="••••••••" maxlength="64">
+           </div>
+           <div class="field-row">
+             <label>نوع التشفير</label>
+             <select class="select-input" id="qrWifiEnc">
+               <option value="WPA">WPA / WPA2</option>
+               <option value="WEP">WEP</option>
+               <option value="nopass">بدون كلمة مرور</option>
+             </select>
+           </div>
+         </div>
+       </div>
+ 
+       <div class="qr-color-row" style="margin-top:6px;">
+         <div class="qr-color-field">
+           <input type="color" id="qrFgColor" value="#0b0a12">
+           <span>لون الرمز</span>
+         </div>
+         <div class="qr-color-field">
+           <input type="color" id="qrBgColor" value="#ffffff">
+           <span>لون الخلفية</span>
+         </div>
+       </div>
+     </div>
+   </div>
+ </main>
+ 
+ <!-- ===================== IMAGE COMPRESSOR PAGE ===================== -->
+ <main class="page" id="page-imgCompress">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(52,211,153,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M4 16l4.5-6 3.5 4 2.5-3L20 16"/><rect x="2" y="3" width="20" height="18" rx="2"/></svg>
+       </div>
+       <h1>ضاغط الصور</h1>
+       <p>صغّر حجم الصورة بدون رفعها لأي خادم — المعالجة بالكامل في متصفحك</p>
+     </div>
+ 
+     <div class="error-banner" id="compressError"></div>
+ 
+     <div class="dropzone" id="compressDropzone">
+       <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+       <h4>اسحب صورة هنا أو اضغط للاختيار</h4>
+       <p>JPG, PNG, WebP, GIF, BMP — حتى 15 ميجابايت (HEIC غير مدعوم)</p>
+       <input type="file" id="compressFileInput" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/heic,image/heif,.heic,.heif">
+     </div>
+ 
+     <div id="compressWorkArea" style="display:none;">
+       <div class="gen-card" style="margin-top:18px;">
+         <div class="field-row">
+           <div class="slider-row"><label>مستوى الجودة</label><span class="val" id="compressQualityVal">75%</span></div>
+           <input type="range" id="compressQuality" min="10" max="100" value="75">
+         </div>
+         <button class="gen-btn" id="compressRunBtn" type="button" style="background: linear-gradient(135deg, #34d399, #059669); box-shadow:0 10px 26px rgba(52,211,153,.3);">
+           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.5-6 3.5 4 2.5-3L20 16"/></svg>
+           ضغط الصورة
+         </button>
+       </div>
+ 
+       <div class="compare-savings" id="compressSavings" style="display:none;"></div>
+       <div class="compare-row">
+         <div class="compare-box">
+           <div class="cb-label">قبل</div>
+           <img id="compressBeforeImg" alt="قبل الضغط">
+           <div class="cb-size" id="compressBeforeSize">—</div>
+         </div>
+         <div class="compare-box">
+           <div class="cb-label">بعد</div>
+           <img id="compressAfterImg" alt="بعد الضغط">
+           <div class="cb-size" id="compressAfterSize">—</div>
+         </div>
+       </div>
+ 
+       <button class="gen-btn" id="compressDownloadBtn" type="button" style="display:none; background: linear-gradient(135deg, var(--violet), #7c3aed);">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+         تحميل الصورة المضغوطة
+       </button>
+     </div>
+   </div>
+ </main>
+ 
+ <!-- ===================== IMAGE FORMAT CONVERTER PAGE ===================== -->
+ <main class="page" id="page-imgConvert">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(251,191,36,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+       </div>
+       <h1>محوّل صيغة الصور</h1>
+       <p>حوّل بين PNG و JPG و WebP فوراً، بدون رفع لأي خادم</p>
+     </div>
+ 
+     <div class="error-banner" id="convertError"></div>
+ 
+     <div class="dropzone" id="convertDropzone">
+       <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+       <h4>اسحب صورة هنا أو اضغط للاختيار</h4>
+       <p>JPG, PNG, WebP, GIF, BMP — حتى 15 ميجابايت (HEIC غير مدعوم)</p>
+       <input type="file" id="convertFileInput" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/heic,image/heif,.heic,.heif">
+     </div>
+ 
+     <div id="convertWorkArea" style="display:none;">
+       <div class="gen-card" style="margin-top:18px;">
+         <div class="field-row">
+           <label>الصيغة الهدف</label>
+           <select class="select-input" id="convertTargetFormat">
+             <option value="image/png">PNG</option>
+             <option value="image/jpeg">JPG</option>
+             <option value="image/webp">WebP</option>
+           </select>
+         </div>
+         <button class="gen-btn" id="convertRunBtn" type="button" style="background: linear-gradient(135deg, #fbbf24, #d97706); box-shadow:0 10px 26px rgba(251,191,36,.3);">
+           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+           تحويل الصيغة
+         </button>
+       </div>
+ 
+       <div class="compare-row">
+         <div class="compare-box">
+           <div class="cb-label">الأصلية</div>
+           <img id="convertBeforeImg" alt="الصورة الأصلية">
+           <div class="cb-size" id="convertBeforeSize">—</div>
+         </div>
+         <div class="compare-box">
+           <div class="cb-label">بعد التحويل</div>
+           <img id="convertAfterImg" alt="بعد التحويل">
+           <div class="cb-size" id="convertAfterSize">—</div>
+         </div>
+       </div>
+ 
+       <button class="gen-btn" id="convertDownloadBtn" type="button" style="display:none; background: linear-gradient(135deg, var(--violet), #7c3aed);">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+         تحميل الصورة المحوّلة
+       </button>
+     </div>
+   </div>
+ </main>
+ 
+ <!-- ===================== BASE64 / URL ENCODER-DECODER PAGE ===================== -->
+ <main class="page" id="page-base64Tool">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(139,92,246,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+       </div>
+       <h1>محوّل Base64 و URL</h1>
+       <p>شفّر أو فكّ تشفير النصوص فوراً، كله يعمل محلياً بمتصفحك</p>
+     </div>
+ 
+     <div class="gen-card">
+       <div class="qr-tabs">
+         <button class="active" data-b64mode="base64" type="button">Base64</button>
+         <button data-b64mode="url" type="button">URL Encode</button>
+       </div>
+ 
+       <div class="field-row">
+         <label>النص الأصلي</label>
+         <textarea class="textarea-input" id="b64Input" placeholder="اكتب أو الصق النص هنا..."></textarea>
+       </div>
+ 
+       <button class="swap-btn" id="b64SwapBtn" type="button" title="عكس الاتجاه (فك التشفير)">
+         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+       </button>
+ 
+       <div class="field-row">
+         <label>النتيجة</label>
+         <textarea class="textarea-input" id="b64Output" placeholder="ستظهر النتيجة هنا تلقائياً" readonly></textarea>
+       </div>
+ 
+       <div class="error-banner" id="b64Error"></div>
+ 
+       <button class="gen-btn" id="b64CopyBtn" type="button" style="background: linear-gradient(135deg, var(--violet), #7c3aed);">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+         نسخ النتيجة
+       </button>
+     </div>
+   </div>
+ </main>
+ 
+ <!-- ===================== PDF MERGE PAGE ===================== -->
+ <main class="page" id="page-pdfMerge">
+   <div class="tool-wrap">
+     <a href="#" class="back-link nav-link" data-page="home">→ العودة للرئيسية</a>
+     <div class="tool-header">
+       <div class="tool-badge" style="background:rgba(96,165,250,.15);">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+       </div>
+       <h1>دمج ملفات PDF</h1>
+       <p>اختر عدة ملفات PDF، رتّبها كما تريد، وادمجها في ملف واحد — محلياً بدون رفع</p>
+     </div>
+ 
+     <div class="error-banner" id="pdfError"></div>
+ 
+     <div class="dropzone" id="pdfDropzone">
+       <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+       <h4>اسحب ملفات PDF هنا أو اضغط للاختيار</h4>
+       <p>يمكن اختيار أكثر من ملف، حتى 20 ميجابايت لكل ملف</p>
+       <input type="file" id="pdfFileInput" accept="application/pdf" multiple>
+     </div>
+ 
+     <div class="pdf-list" id="pdfList"></div>
+ 
+     <div class="progress-bar-wrap" id="pdfProgressWrap">
+       <div class="progress-bar-track"><div class="progress-bar-fill" id="pdfProgressFill"></div></div>
+       <div class="progress-bar-text" id="pdfProgressText">جارٍ الدمج...</div>
+     </div>
+ 
+     <button class="gen-btn" id="pdfMergeBtn" type="button" style="display:none; background: linear-gradient(135deg, #60a5fa, #2563eb); box-shadow:0 10px 26px rgba(96,165,250,.3);">
+       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+       دمج الملفات وتحميل PDF واحد
+     </button>
+   </div>
+ </main>
+ 
+ <!-- ===================== ALL TOOLS PAGE ===================== -->
+ <main class="page" id="page-tools">
+   <div class="tool-wrap" style="max-width:1000px;">
+     <div class="tool-header">
+       <h1>أدواتنا الذكية</h1>
+       <p>كل ما تحتاجه لحماية هويتك الرقمية في مكان واحد</p>
+     </div>
+     <div class="tools-grid" id="toolsGridFull"></div>
+   </div>
+ </main>
+ 
+ 
+ <footer>
+   <div>نَفاذ Nafadh © 2026 جميع الحقوق محفوظة</div>
+   <div class="footer-links">
+     <a href="#">تواصل معنا</a>
+     <a href="#">الشروط</a>
+     <a href="#">الخصوصية</a>
+   </div>
+   <div class="footer-social">
+     <a href="#" title="تويتر"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+     <a href="#" title="انستقرام"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+     <a href="#" title="جيت هاب"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.4 9.4 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg></a>
+   </div>
+ </footer>
+</div>
+ 
+<div class="toast" id="toast"></div>
+ 
+<script src="script.js"></script>
+
+</body>
+</html>
