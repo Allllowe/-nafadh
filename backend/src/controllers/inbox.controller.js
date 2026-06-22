@@ -58,11 +58,14 @@ function deleteInbox(req, res){
 function extendInbox(req, res){
   const { address } = req.params;
   const minutes = Math.min(Math.max(parseInt((req.body || {}).minutes, 10) || 10, 1), 60);
-  const newExpiry = inboxService.extendInbox(address, minutes);
-  if(newExpiry === null){
+  const result = inboxService.extendInbox(address, minutes);
+  if(!result.ok){
+    if(result.reason === 'already_extended'){
+      return res.status(409).json({ message: 'لا يمكن تمديد صلاحية الصندوق أكثر من مرة واحدة' });
+    }
     return res.status(404).json({ message: 'الصندوق غير موجود أو انتهت صلاحيته' });
   }
-  res.json({ expiresAt: new Date(newExpiry).toISOString() });
+  res.json({ expiresAt: new Date(result.expiresAt).toISOString() });
 }
 
 /**

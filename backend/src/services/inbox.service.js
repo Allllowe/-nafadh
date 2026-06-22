@@ -20,6 +20,10 @@ const inboxes = new Map();
 
 const AVATAR_COLORS = ['#8b5cf6', '#34d399', '#60a5fa', '#fbbf24', '#f472b6'];
 
+// Hard cap: an inbox can never live longer than 60 minutes from creation,
+// no matter how it was extended.
+const MAX_LIFETIME_MS = 60 * 60 * 1000;
+
 function ttlMs(){
   return config.inboxTtlMinutes * 60 * 1000;
 }
@@ -76,10 +80,13 @@ function createInbox(){
   const messages = new Map();
   seedDemoMessages().forEach(m => messages.set(m.id, m));
 
+  const createdAt = Date.now();
   const inbox = {
     address,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + ttlMs(),
+    createdAt,
+    // Initial window, never beyond the 60-minute hard cap.
+    expiresAt: Math.min(createdAt + ttlMs(), createdAt + MAX_LIFETIME_MS),
+    extended: false, // the single allowed extension hasn't been used yet
     messages
   };
   inboxes.set(address, inbox);
@@ -132,9 +139,13 @@ function deleteInbox(address){
 
 function extendInbox(address, minutes){
   const inbox = getInbox(address);
-  if(!inbox) return null;
-  inbox.expiresAt += minutes * 60 * 1000;
-  return inbox.expiresAt;
+  if(!inbox) return { ok: false, reason: 'not_found' };
+  if(inbox.extended) return { ok: false, reason: 'already_extended' };
+  // Allow the one extension, but clamp to the 60-minute hard cap.
+  const maxExpiry = inbox.createdAt + MAX_LIFETIME_MS;
+  inbox.expiresAt = Math.min(inbox.expiresAt + minutes * 60 * 1000, maxExpiry);
+  inbox.extended = true;
+  return { ok: true, expiresAt: inbox.expiresAt };
 }
 
 /**
