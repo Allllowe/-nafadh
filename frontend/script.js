@@ -30,7 +30,9 @@
    if(!res.ok){
      let detail = '';
      try { detail = (await res.json()).message || ''; } catch(e){}
-     throw new Error(detail || ('API error ' + res.status));
+     const err = new Error(detail || ('API error ' + res.status));
+     err.status = res.status; // marks that the backend responded (it IS reachable)
+     throw err;
    }
    if(res.status === 204) return null;
    return res.json();
@@ -241,8 +243,14 @@
  // inbox and shrinks toward 0 as it expires. Remaining time is recomputed from
  // the wall clock each tick, so it stays accurate even if the tab was throttled.
  const DEFAULT_TTL_MS = 20 * 60 * 1000; // matches backend INBOX_TTL_MINUTES default
+ const MAX_LIFETIME_MS = 60 * 60 * 1000; // hard cap: mirrors backend MAX_LIFETIME_MS
  let expiresAtMs = Date.now() + DEFAULT_TTL_MS;
  let timerBaselineMs = DEFAULT_TTL_MS;
+ // Local extend guard (used only when the backend is unreachable): track when
+ // the local inbox was created and whether its single extension was used, so
+ // the offline path obeys the same "one extension, 60-minute cap" rule.
+ let localCreatedAtMs = Date.now();
+ let localExtended = false;
  const timerDisplay = document.getElementById('timerDisplay');
  const progressFill = document.getElementById('progressFill');
  function renderTimer(){
@@ -270,6 +278,9 @@
  function setLocalExpiry(ttlMs){
    expiresAtMs = Date.now() + ttlMs;
    timerBaselineMs = Math.max(ttlMs, 1);
+   // Fresh local inbox: reset the offline extend guard.
+   localCreatedAtMs = Date.now();
+   localExtended = false;
    renderTimer();
  }
  renderTimer();
@@ -285,12 +296,31 @@
        showToast('⏱️ تم تمديد الوقت 10 دقائق');
        return;
      } catch(err){
-       // Backend became unreachable mid-session — fall through to a local
-       // extension so the button still does something useful.
+       // A 4xx/5xx response means the backend IS reachable and deliberately
+       // refused (already extended / at the 60-min cap) — respect that and
+       // stop, instead of silently extending locally. Only a genuine network
+       // failure (no err.status) falls through to the offline path below.
+       if(err && err.status){
+         showToast(err.message || 'تعذّر تمديد صلاحية الصندوق');
+         return;
+       }
      }
    }
-   expiresAtMs += 10*60*1000;
+   // Offline path: obey the same rule as the backend — only one extension,
+   // and never beyond the 60-minute hard cap from creation.
+   if(localExtended){
+     showToast('لا يمكن تمديد صلاحية الصندوق أكثر من مرة واحدة');
+     return;
+   }
+   const maxExpiry = localCreatedAtMs + MAX_LIFETIME_MS;
+   const newExpiry = Math.min(expiresAtMs + 10*60*1000, maxExpiry);
+   if(newExpiry <= expiresAtMs){
+     showToast('وصل الصندوق للحد الأقصى للوقت (60 دقيقة)');
+     return;
+   }
+   expiresAtMs = newExpiry;
    timerBaselineMs = Math.max(timerBaselineMs, expiresAtMs - Date.now(), 1);
+   localExtended = true;
    renderTimer();
    showToast('⏱️ تم تمديد الوقت 10 دقائق');
  });
@@ -307,9 +337,9 @@
  function localDemoMessages(){
    return [
      { id:'demo-1', time:'منذ دقيقتين', subject:'تأكيد إنشاء حسابك', preview:'مرحباً بك! يرجى مراجعة بيانات حسابك الجديد من خلال لوحة التحكم.', sender:'team@example-app.com', color:'#8b5cf6', initial:'A', read:false },
-     { id:'demo-2', time:'منذ 6 دقائق', subject:'رمز تحقق تجريبي', preview:'هذا رمز تحقق تجريبي لأغراض الاختبار فقط. صالح لمدة 10 دقائق.', sender:'verify@demo-service.test', color:'#34d399', initial:'V', read:false },
-     { id:'demo-3', time:'منذ 14 دقيقة', subject:'فاتورتك الشهرية جاهزة', preview:'يمكنك الاطلاع على تفاصيل الفاتورة والدفع من خلال الرابط المرفق.', sender:'billing@sample-co.io', color:'#60a5fa', initial:'B', read:true },
-     { id:'demo-4', time:'منذ 28 دقيقة', subject:'تحديث في سياسة الاستخدام', preview:'قمنا بتحديث شروط الاستخدام الخاصة بنا، يرجى الاطلاع عليها.', sender:'updates@notify-test.net', color:'#fbbf24', initial:'N', read:true },
+     { id:'demo-2', time:'منذ 6 دقائق', subject:'رمز تحقق تجريبي', preview:'هذا رمز تحقق تجريبي لأغراض الاختبار فقط. صالح لمدة 10 دقائق.', sender:'verify@demo-service.com', color:'#34d399', initial:'V', read:false },
+     { id:'demo-3', time:'منذ 14 دقيقة', subject:'فاتورتك الشهرية جاهزة', preview:'يمكنك الاطلاع على تفاصيل الفاتورة والدفع من خلال الرابط المرفق.', sender:'billing@sample-co.com', color:'#60a5fa', initial:'B', read:true },
+     { id:'demo-4', time:'منذ 28 دقيقة', subject:'تحديث في سياسة الاستخدام', preview:'قمنا بتحديث شروط الاستخدام الخاصة بنا، يرجى الاطلاع عليها.', sender:'updates@notify-test.com', color:'#fbbf24', initial:'N', read:true },
      { id:'demo-5', time:'منذ ساعة', subject:'نشرة الأخبار الأسبوعية', preview:'إليك أهم الأخبار والتحديثات لهذا الأسبوع من فريقنا.', sender:'news@weekly-demo.com', color:'#f472b6', initial:'W', read:true },
    ];
  }
@@ -327,7 +357,7 @@
      serverExpiry = data.expiresAt;
      usingLocalFallback = false;
    } catch(err){
-     currentAddress = randomAddrSegment(7) + '@nafadh.local';
+     currentAddress = randomAddrSegment(7) + '@nafadh.com';
      messages = localDemoMessages();
      usingLocalFallback = true;
    }

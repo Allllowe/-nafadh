@@ -47,8 +47,8 @@ function seedDemoMessages(){
   const now = Date.now();
   const demo = [
     { offsetMin: 2, subject: 'تأكيد إنشاء حسابك', preview: 'مرحباً بك! يرجى مراجعة بيانات حسابك الجديد من خلال لوحة التحكم.', sender: 'team@example-app.com', initial: 'A', read: false },
-    { offsetMin: 6, subject: 'رمز تحقق تجريبي', preview: 'هذا رمز تحقق تجريبي لأغراض الاختبار فقط. صالح لمدة 10 دقائق.', sender: 'verify@demo-service.test', initial: 'V', read: false },
-    { offsetMin: 14, subject: 'فاتورتك الشهرية جاهزة', preview: 'يمكنك الاطلاع على تفاصيل الفاتورة والدفع من خلال الرابط المرفق.', sender: 'billing@sample-co.io', initial: 'B', read: true }
+    { offsetMin: 6, subject: 'رمز تحقق تجريبي', preview: 'هذا رمز تحقق تجريبي لأغراض الاختبار فقط. صالح لمدة 10 دقائق.', sender: 'verify@demo-service.com', initial: 'V', read: false },
+    { offsetMin: 14, subject: 'فاتورتك الشهرية جاهزة', preview: 'يمكنك الاطلاع على تفاصيل الفاتورة والدفع من خلال الرابط المرفق.', sender: 'billing@sample-co.com', initial: 'B', read: true }
   ];
   return demo.map((m, i) => ({
     id: randomId(),
@@ -174,6 +174,24 @@ function receiveInboundMessage(address, { subject, preview, sender, initial, col
   return serializeMessage(message);
 }
 
+/**
+ * MOCK email sender — intentionally does NOT send any real email.
+ *
+ * This project has no real outbound mail and must never acquire one by
+ * accident (no SMTP, no provider API, no credit usage). This stub only
+ * logs what *would* be sent and returns a fake success result, so any
+ * future "send" feature can call it safely during development.
+ */
+function sendEmailMock({ to, subject, body } = {}){
+  const fakeTo = to || 'demo@nafadh.com';
+  console.log('[MOCK EMAIL] no real email sent —', JSON.stringify({
+    to: fakeTo,
+    subject: subject || '(بدون عنوان)',
+    bodyPreview: (body || '').slice(0, 80)
+  }));
+  return { ok: true, mock: true, to: fakeTo };
+}
+
 module.exports = {
   createInbox,
   getInbox,
@@ -183,5 +201,6 @@ module.exports = {
   deleteAllMessages,
   deleteInbox,
   extendInbox,
-  receiveInboundMessage
+  receiveInboundMessage,
+  sendEmailMock
 };
